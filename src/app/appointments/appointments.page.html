@@ -1,0 +1,104 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Appointments</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- CREATE form -->
+  <ion-list>
+    <ion-item>
+      <ion-input
+        label="Full Name"
+        labelPlacement="stacked"
+        [(ngModel)]="fullName"
+        placeholder="e.g., Juan Cruz"
+        [maxlength]="60">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input
+        label="Appointment Date"
+        labelPlacement="stacked"
+        type="date"
+        [(ngModel)]="appointmentDate">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input
+        label="Appointment Time"
+        labelPlacement="stacked"
+        type="time"
+        [(ngModel)]="appointmentTime">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input
+        label="Purpose"
+        labelPlacement="stacked"
+        [(ngModel)]="purpose"
+        placeholder="e.g., Consultation">
+      </ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-button
+    expand="block"
+    (click)="addAppointment()"
+    [disabled]="!fullName.trim() || !appointmentDate || !appointmentTime || !purpose.trim()">
+    Add Appointment
+  </ion-button>
+
+  @if (errorMsg()) {
+  <ion-text color="danger">
+    <p>{{ errorMsg() }}</p>
+  </ion-text>
+}
+
+  
+  <!-- READ: live list -->
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Appointments ({{ appointments().length }})</ion-label>
+    </ion-list-header>
+
+    @for (appointment of appointments(); track appointment.id) {
+      <ion-item>
+        <ion-checkbox
+          slot="start"
+          aria-label="Completed"
+          [checked]="appointment.status === 'Completed'"
+          (ionChange)="toggle(appointment, $event.detail.checked)">
+        </ion-checkbox>
+
+        <ion-label [class.done]="appointment.status === 'Completed'">
+          <h2>{{ appointment.fullName }}</h2>
+          <p>Date: {{ appointment.appointmentDate | date: 'MMM d, y' }}</p>
+          <p>Time: {{ appointment.appointmentTime }}</p>
+          <p>Purpose: {{ appointment.purpose }}</p>
+          <p>Status: {{ appointment.status }}</p>
+        </ion-label>
+
+        <ion-button
+          slot="end"
+          fill="clear"
+          color="danger"
+          (click)="deleteAppointment(appointment.id)">
+          Delete
+        </ion-button>
+      </ion-item>
+    } @empty {
+      <ion-item lines="none">
+        <ion-label color="medium">
+          No appointments yet. Add one above.
+        </ion-label>
+      </ion-item>
+    }
+  </ion-list>
+
+</ion-content>

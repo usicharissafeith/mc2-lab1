@@ -1,0 +1,50 @@
+<ion-header [translucent]="true"> 
+  <ion-toolbar color="primary"> 
+    <ion-title>Cloud Notes</ion-title> 
+  </ion-toolbar> 
+</ion-header> 
+
+<ion-content class="ion-padding"> 
+  <!-- CREATE form --> 
+  <ion-list> 
+    <ion-item> 
+      <ion-input label="Title" labelPlacement="stacked" [(ngModel)]="title" 
+        placeholder="e.g., Buy printer ink" [maxlength]="60"></ion-input> 
+    </ion-item> 
+    <ion-item> 
+      <ion-textarea label="Details" labelPlacement="stacked" [(ngModel)]="body" 
+        [autoGrow]="true" placeholder="Optional"></ion-textarea> 
+    </ion-item> 
+  </ion-list> 
+  <ion-button expand="block" (click)="add()" [disabled]="!title.trim()">Add note
+    </ion-button> 
+
+@if (errorMsg()) { 
+    <ion-text color="danger"><p>{{ errorMsg() }}</p></ion-text> 
+  } 
+  
+  <!-- READ: live list --> 
+  <ion-list> 
+    <ion-list-header> 
+      <ion-label>Notes ({{ notes().length }})</ion-label> 
+    </ion-list-header> 
+  
+    @for (note of notes(); track note.id) { 
+      <ion-item> 
+        <ion-checkbox slot="start" aria-label="Done" [checked]="note.done" 
+          (ionChange)="toggle(note, $event.detail.checked)"></ion-checkbox> 
+        <ion-label [class.done]="note.done"> 
+          <h2>{{ note.title }}</h2> 
+          <p>{{ note.body }}</p> 
+          <p><small>{{ note.createdAt | date: 'MMM d, y h:mm a' }}</small></p> 
+        </ion-label> 
+        <ion-button slot="end" fill="clear" color="danger" 
+(click)="remove(note)">Delete</ion-button> 
+      </ion-item> 
+    } @empty { 
+      <ion-item lines="none"> 
+        <ion-label color="medium">No notes yet. Add one above.</ion-label>
+      </ion-item>
+    }
+  </ion-list>
+</ion-content> 
